@@ -343,22 +343,22 @@ const sensors = useSensors(
   {...listeners}
   style={{
     position: "absolute",
-    top: 10,
-    right: 10,
+    top: 1,
+    right: 1,
     transform: "none",
     background: p.dot,
     borderRadius: 20,
     padding: "8px 18px",
     zIndex: 20,
     cursor: "grab",
-    opacity: 0.8
+    opacity: 0
   }}
 >
-  <span>Drag</span>
+  <span></span>
 </div>
 
   {/* CARD CONTENT */}
-  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+  <div style={{ display: "flex", alignItems: "center", gap: 1 }}>
     <div style={{ flex: 1 }}>
       {children}
     </div>
@@ -706,7 +706,7 @@ const sensors = useSensors(
           {/* Hint */}
           <div style={{textAlign:'center',fontSize:10,fontWeight:700,color:textMuted(),padding:'5px 0 0',opacity:0.5}}>
             ← Swipe to switch tabs
-            {habits.length>1&&['Today','Weekly','Monthly'].includes(activeTab)&&' · Hold 3s to reorder'}
+            {habits.length>1&&['Today','Weekly','Monthly'].includes(activeTab)&&' · Hold to reorder'}
           </div>
 
           {/* TODAY */}
@@ -727,11 +727,10 @@ const sensors = useSensors(
         const newArr = arrayMove(habits, oldIndex, newIndex);
         setHabits(newArr);
 
-        await supabase.from('habits').upsert(
-  newArr.map((h, i) => ({
-    id: h.id,
-    order_index: i
-  }))
+        await Promise.all(
+  newArr.map((h, i) =>
+    supabase.from('habits').update({ order_index: i }).eq('id', h.id)
+  )
 );
       }}
     >
@@ -817,7 +816,7 @@ const sensors = useSensors(
                             <div style={{fontSize:12,fontWeight:700,color:isDark?'#888':'#aaa'}}>🔥 {getStreak(hb.id)} Days</div>
                           </div>
                         </div>
-                        <span style={{fontSize:10,fontWeight:800,color:isDark?'#666':'#bbb'}}>Everyday</span>
+                        <span style={{fontSize:10,fontWeight:800,color:isDark?'#666':'#bbb'}}></span>
                       </div>
                       <div style={{display:'flex',justifyContent:'space-between'}}>
                         {DAYS.map((day,di)=>{
